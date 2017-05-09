@@ -28,18 +28,6 @@ if logfid<1,
     error('could not open logfile!');
 end;
 fprintf(logfid,'%s',ppid);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% set up experimental parameters
-trials=20; % how many trials
-randomiser=randperm(trials);
-load('sentences.mat');
-init=0;
-trialMarker = repmat([0:1],1,20); % a random order to present sentence & silence trials, 20 sets in all
-trialMarker = trialMarker(randperm(length(trialMarker)));
-
-jitter=[repmat([0:0.5:1],1,20)]; %make long vector of jitter values
-jitter=jitter(randperm(length(jitter)));
 
 %label regressors
 names = {
@@ -53,15 +41,28 @@ for x=1:2 % to create a matrix of onsets and durations for future use
     buttonpress{x}=[];
 end
 c1 = 0; c2 = 0; c3 = 0;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%% set up experimental parameters
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+trials=20; % how many trials
+randomiser=randperm(trials);
+load('sentences.mat');
+init=0;
+trialMarker = repmat([0:1],1,20); % a random order to present sentence & silence trials, 20 sets in all
+trialMarker = trialMarker(randperm(length(trialMarker)));
 
-%% check if this is a dummy run
+jitter=[repmat([0:0.5:1],1,20)]; %make long vector of jitter values
+jitter=jitter(randperm(length(jitter)));
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% check if this is a dummy run and set up input devices accordingly
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TA = 2; %set the acquisition time per volume
 dummyrun= input('Is this a dry run or the real thing? Press 1 if dry run, 0 if real thing');
 if dummyrun == 0
     % waitcmd = ('PulseChecker_new(1)');
-    MRI=1,
+    MRI=1;
     % set up input devices
     numDevices=PsychHID('NumDevices');
     devices=PsychHID('Devices');
@@ -127,9 +128,10 @@ KbWait;
 
 DrawFormattedText(w,'Read the sentences or wait if a + is displayed','center','center',0);
 Screen('Flip',w);
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% dummy scans & timing
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 dummyscans = 3; %set number of dummies
 if dummyscans>0
     for i = 1:dummyscans
@@ -149,8 +151,11 @@ if dummyscans>0
     fprintf(logfid,'\n%s\t%s\t%s\t%s\t%s\t%s', ...
         'trialNo','condition','adjustTime','duration','rawOnset','rawOffset');
 end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% start experiment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 s=1; %counter for the sentence set
 
 for t = 1:length(trialMarker)
@@ -222,6 +227,7 @@ for t = 1:length(trialMarker)
         t,trialName{t},CorrectedOnset(t),duration(t),rawOnset(t),rawOffset(t));
     
 end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %end of all trials
 if MRI ==1
@@ -237,13 +243,16 @@ fprintf(logfid, '\n%s\t%d\t', ...
 %deleted until Matlab is closed
 fclose(logfid);
 
-%% bye
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% finish up
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 savename= [pwd,'/Onsets/',ppid,'.mat']; %make sure you have created an Onset directory
 save([pwd,'/Onsets/',ppid,'_Localiser.mat'],'names','onsets','durations');
 sca;
 clear all;
 disp('Experiment done and dusted! Yay!');
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 end
 
