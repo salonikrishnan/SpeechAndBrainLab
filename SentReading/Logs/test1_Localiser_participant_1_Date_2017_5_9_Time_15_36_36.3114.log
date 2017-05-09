@@ -1,0 +1,8 @@
+test1_Localiser_participant_1_Date_2017_5_9_Time_15_36_36.3114
+dummy	1	4.594746e+05
+dummy	2	4.594805e+05
+dummy	3	4.594834e+05
+RefVol	4	4.594862e+05
+trialNo	condition	adjustTime	duration	rawOnset	rawOffset
+1	Silence	1.573685e-02	2.500290e+00	4.594862e+05	4.594887e+05
+2	Silence	2.521846e+00	3.001570e+00	4.594887e+05	4.594917e+05
