@@ -1,3 +1,5 @@
+Lots of code here has been built on guidelines provided by Samuel Evans (UCL, now Westminster). All mistakes however, are likely to be mine. 
+
 This script allows you to present sentences or fixation crosses. It will wait for 2 seconds and then move on to the next sentence, or you can hit a button to make it go faster.
 
 To use this script, you will need to create two directories within your 'SentReading' folder, 'Logs' and 'Onsets'
