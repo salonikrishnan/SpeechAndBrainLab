@@ -4,8 +4,10 @@ This script allows you to present sentences or fixation crosses. It will wait fo
 
 To use this script, you will need to create two directories within your 'SentReading' folder, 'Logs' and 'Onsets'
 These can be done by easily typing 
+```matlab
 mkdir('Logs');
 mkdir('Onsets');
+```
 
 To change the sentences, go to Sentences.m, type in new Sentences and then run this script.
 
