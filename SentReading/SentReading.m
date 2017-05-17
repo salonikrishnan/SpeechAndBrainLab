@@ -67,16 +67,16 @@ if dummyrun == 0
     numDevices=PsychHID('NumDevices');
     devices=PsychHID('Devices');
     for n=1:numDevices,
-        if (findstr(devices(n).transport,'USB') & findstr(devices(n).usageName,'Keyboard') & (devices(n).productID==16385 | devices(n).vendorID==6171 | devices(n).totalElements==274)),
+        if (findstr(devices(n).transport,'USB') & findstr(devices(n).usageName,'Keyboard') & (devices(n).productID==8 | devices(n).vendorID==6171 | devices(n).totalElements==5)),
             inputDevice=n;
         else
-            inputDevice=2; % my keyboard
+            inputDevice=7; % my keyboard 
         end;
     end;
     fprintf('Using Device #%d (%s)\n',inputDevice,devices(inputDevice).product);
     KbName('UnifyKeyNames');
     trigger1 = KbName('5%');
-    waitcmd = ('KbTriggerWait(trigger1)'); %replace 34 with correct code, this is 5 on my keyboard; add device number if appropriate
+    waitcmd = ('KbTriggerWait(trigger1, inputDevice)'); %replace 34 with correct code, this is 5 on my keyboard; add device number if appropriate
 else
     waitcmd = ('WaitSecs(TA)');
     MRI = 0;
