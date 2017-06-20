@@ -29,8 +29,8 @@ if run_num==1,
     while isempty(find(order_num==[1 2 3 4])),
     order_num=input('Order number must be 1 through 4 - please re-enter: ');
     end;
-    LADDER1IN=input('Ladder1 start val (e.g. 350): ');
-    LADDER2IN=input('Ladder2 start val (e.g. 450): ');
+    LADDER1IN=input('Ladder1 start val (e.g. 250): ');
+    LADDER2IN=input('Ladder2 start val (e.g. 350): ');
 end;
 
 % write trial-by-trial data to a text logfile
@@ -168,25 +168,25 @@ try  % goes with catch at end of script
 
     %%%% Setting up the sound stuff
     %%%% Psychportaudio
-    load soundfile.mat %%% NEED SOMETHING PERSONALIZED TO ME????? I.E. IF WANT THE SOUND HIGHER??
+     load soundfile.mat %%% NEED SOMETHING PERSONALIZED TO ME????? I.E. IF WANT THE SOUND HIGHER??
     %wave=y;
     wave=sin(1:0.25:1000);
     %freq=Fy*1.5; % change this to change freq of tone
-    freq=22254;
-    nrchannels = size(wave,1);    
+    freq1=22254;
+    nrchannels1 = size(wave,1);    
     % Default to auto-selected default output device:
     deviceid = -1;
-    % Request latency mode 2, which used to be the best one in our measurement:
+    % Requestlatency mode 2, which used to be the best one in our measurement:
     reqlatencyclass = 2; % class 2 empirically the best, 3 & 4 == 2
     % Initialize driver, request low-latency preinit:
     InitializePsychSound(1);
     % Open audio device for low-latency output:
-    pahandle = PsychPortAudio('Open', deviceid, [], reqlatencyclass, freq, nrchannels);
+    pahandle1 = PsychPortAudio('Open', deviceid, [], reqlatencyclass, freq1, nrchannels1);
     %Play the sound
-    PsychPortAudio('FillBuffer', pahandle, wave);
-    PsychPortAudio('Start', pahandle, 1, 0, 0);
+    PsychPortAudio('FillBuffer', pahandle1, wave);
+    PsychPortAudio('Start', pahandle1, 1, 0, 0);
     WaitSecs(1);
-    PsychPortAudio('Stop', pahandle);
+    PsychPortAudio('Stop', pahandle1);
     
         %set up audio for recording
     triggerlevel = 0.1;
@@ -282,137 +282,113 @@ try  % goes with catch at end of script
                     else
                         DrawFormattedText(w,'FINT', 'center', 'center');
                     end;
-                    Screen('Flip',w);
-                    arrow_start_time = GetSecs;
                     
                     noresp=1;
                     notone=1;
+                    level = 0;
                     
-                    while (GetSecs-arrow_start_time < arrow_duration & noresp),
-                        
-                        
-                        freq = 44100;
-                        pahandle = PsychPortAudio('Open', [], 2, 2, freq, 2, [], 0.02);
-                        PsychPortAudio('GetAudioData', pahandle, 10);
-                        PsychPortAudio('Start', pahandle, 0, 0, 1);
-                        
-                        tStim = GetSecs; %start monitoring time
-                        level = 0;
-                        
-                        % Repeat as long as below trigger-threshold:
-                        while level < triggerlevel & noresp
-                            % Fetch current audiodata:
-                            [audiodata offset overflow tCaptureStart]= PsychPortAudio('GetAudioData', pahandle);
-                            
-                            % Compute maximum signal amplitude in this chunk of data:
-                            if ~isempty(audiodata)
-                                level = max(abs(audiodata(1,:)));
-                            else
-                                level = 0;
-                            end
-                            
-                            % Below trigger-threshold?
-                            if level < triggerlevel
-                                % Wait for five milliseconds before next scan:
-                                WaitSecs(0.005);
-                            end
+                    %set up listening
+                    freq2 = 44100;
+                    pahandle2 = PsychPortAudio('Open', [], 2, 2, freq2, 2, [], 0.02);
+                    PsychPortAudio('GetAudioData', pahandle2, 10);
+                    %flip screen
+                    Screen('Flip',w);
+                    %start time
+                    arrow_start_time = GetSecs;
+                    PsychPortAudio('Start', pahandle2, 0, 0, 1);
+                    
+                    while level < triggerlevel && noresp && (GetSecs-arrow_start_time < arrow_duration)
+                        % Fetch current audiodata:
+                        [audiodata offset overflow tCaptureStart]= PsychPortAudio('GetAudioData', pahandle2);
+                        % Compute maximum signal amplitude in this chunk of data:
+                        if ~isempty(audiodata)
+                            level = max(abs(audiodata(1,:)));
+                        else
+                            level = 0;
                         end
                         
-                        Seeker(Pos,7) = 1111;
-                        
-                               
-                        % Find exact location of first above threshold sample.
-                        idx = min(find(abs(audiodata(1,:)) >= triggerlevel)); %#ok<MXFND>
-                        
-                        % Compute absolute event time:
-                        tOnset = tCaptureStart + ((offset + idx - 1) / freq);
-                        
-                        % Stop sound capture:
-                        PsychPortAudio('Stop', pahandle2);
-                        
-                        % Fetch all remaining audio data out of the buffer - Needs to be empty
-                        % before next trial:
-                        PsychPortAudio('GetAudioData', pahandle);
-                        
-                        % Print RT:
-                        fprintf('---> Reaction time is %f milliseconds.\n', (tOnset - tStim)*1000);
-                        
-                        if b==1 && GetSecs-arrow_start_time<0,
-                            Seeker(Pos,9)=0;
-                            Seeker(Pos,13)=0;
-                        else,
-                            Seeker(Pos,9)=tOnset-arrow_start_time; % RT
-                        end;
-%                         [keyIsDown,secs,keyCode] = KbCheck(inputDevice);
-%                         if keyIsDown & noresp,
-%                             try,
-%                                 tmp=KbName(keyCode);
-%                                 if length(tmp) > 1 & (tmp(1)==',' | tmp(1)=='.'),
-%                                     Seeker(Pos,7)=KbName(tmp(2));
-%                                 else,
-%                                     Seeker(Pos,7)=KbName(tmp(1));
-%                                 end;
-%                             catch,
-%                                 Seeker(Pos,7)=9999;
-%                             end;
-%                             if b==1 & GetSecs-arrow_start_time<0,
-%                                 Seeker(Pos,9)=0;
-%                                 Seeker(Pos,13)=0;
-%                             else,
-%                                 Seeker(Pos,9)=GetSecs-arrow_start_time; % RT
-%                             end;
+                        % Below trigger-threshold?
+                        if level < triggerlevel
+                            % Wait for five milliseconds before next scan:
+                            WaitSecs(0.005);
+                        else
+                            Seeker(Pos,7) = 1; %value detected
+                            % Find exact location of first above threshold sample.
+                            idx = min(find(abs(audiodata(1,:)) >= triggerlevel)); %#ok<MXFND>
+                            % Compute absolute event time:
+                            tOnset = tCaptureStart + ((offset + idx - 1) / freq2);
+                            % Stop sound capture:
+                            PsychPortAudio('Stop', pahandle2);
+                            % Fetch all remaining audio data out of the buffer - Needs to be empty
+                            % before next trial:
+                            PsychPortAudio('GetAudioData', pahandle2);
+                            % Print RT:
+                            fprintf('---> Reaction time is %f milliseconds.\n', (tOnset - arrow_start_time)*1000);
+                            
+                            if b==1 && GetSecs-arrow_start_time<0,
+                                Seeker(Pos,9)=0;
+                                Seeker(Pos,13)=0;
+                            else
+                                Seeker(Pos,9)=tOnset-arrow_start_time; % RT
+                            end;
                             noresp=0;
-                        end;
+                            break
+                        end
+
                         WaitSecs(0.001);
-                        if Seeker(Pos,3)==1 & GetSecs - arrow_start_time >=Seeker(Pos,6)/1000 & notone,
+                        if Seeker(Pos,3)==1 && GetSecs - arrow_start_time >=Seeker(Pos,6)/1000 && notone,
                             %% Psychportaudio
-                            PsychPortAudio('FillBuffer', pahandle, wave);
-                            PsychPortAudio('Start', pahandle, 1, 0, 0);
+                            PsychPortAudio('FillBuffer', pahandle1, wave);
+                            PsychPortAudio('Start', pahandle1, 1, 0, 0);
                             Seeker(Pos,14)=GetSecs-arrow_start_time;
                             notone=0;
                             %WaitSecs(1); % So sound plays for set amount of time; if .05, plays twice, otherwise doen't really make it last longer
-                            %PsychPortAudio('Stop', pahandle);
+                            PsychPortAudio('Stop', pahandle1);
                             % Try loop to end sound after 1 sec, while
                             % still looking for responses-DOESN"T WORK!!!!!
-                            while GetSecs<Seeker(Pos,14)+1,
-                                %%% check for escape key %%%
-                                [keyIsDown,secs,keyCode] = KbCheck(inputDevice);
-                                escapekey = KbName('escape');
-                                if keyIsDown & noresp,
-                                    try,
-                                        tmp=KbName(keyCode);
-                                        if length(tmp) > 1 & (tmp(1)==',' | tmp(1)=='.'),
-                                            Seeker(Pos,7)=KbName(tmp(2));
-                                        else,
-                                            Seeker(Pos,7)=KbName(tmp(1));
-                                        end;
-                                    catch,
-                                        Seeker(Pos,7)=9999;
-                                    end;
+                            freq2 = 44100;
+                            PsychPortAudio('GetAudioData', pahandle2, 10);
+                            PsychPortAudio('Start', pahandle2, 0, 0, 1);
+                            while GetSecs<Seeker(Pos,14)+1 && level < triggerlevel && noresp,
+                                %set up listening
+                                [audiodata offset overflow tCaptureStart]= PsychPortAudio('GetAudioData', pahandle2);
+                                % Compute maximum signal amplitude in this chunk of data:
+                                if ~isempty(audiodata)
+                                    level = max(abs(audiodata(1,:)));
+                                else
+                                    level = 0;
+                                end
+                                
+                                % Below trigger-threshold?
+                                if level < triggerlevel
+                                    % Wait for five milliseconds before next scan:
+                                    WaitSecs(0.005);
+                                else
+                                    Seeker(Pos,7) = 1; %value detected
+                                    % Find exact location of first above threshold sample.
+                                    idx = min(find(abs(audiodata(1,:)) >= triggerlevel)); %#ok<MXFND>
+                                    % Compute absolute event time:
+                                    tOnset = tCaptureStart + ((offset + idx - 1) / freq2);
+                                    % Stop sound capture:
+                                    PsychPortAudio('Stop', pahandle2);
+                                    % Fetch all remaining audio data out of the buffer - Needs to be empty
+                                    % before next trial:
+                                    PsychPortAudio('GetAudioData', pahandle);
+                                    % Print RT:
+                                    fprintf('---> Reaction time is %f milliseconds.\n', (tOnset - arrow_start_time)*1000);
                                     if b==1 & GetSecs-arrow_start_time<0,
                                         Seeker(Pos,9)=0;
                                         Seeker(Pos,13)=0;
-                                    else,
-                                        Seeker(Pos,9)=GetSecs-arrow_start_time; % RT
+                                    else
+                                        Seeker(Pos,9)=tOnset-arrow_start_time; % RT
                                     end;
                                     noresp=0;
+                                    break
                                 end;
-                            end;
-                            %PsychPortAudio('Stop', pahandle);
-                            %% Old way to play sound
-                            %Snd('Play',aud_stim,samp);
-                            %Seeker(Pos,14)=GetSecs-arrow_start_time;                          
-                            %notone=0;
+                            end
                         end;
-                        % To try to get stopping sound outside of sound
-                        % loop so can collect responses as well; if do
-                        % this, it doesn't play
-%                         if GetSecs-Seeker(Pos,14)>=1,
-%                             % Stop playback:
-%                             PsychPortAudio('Stop', pahandle);
-%                         end;
-                    end; %end while	
-                     PsychPortAudio('Stop', pahandle); % If do this,
+                    end; %end while
+                    PsychPortAudio('Stop', pahandle2); % If do this,
                     % response doesn't end loop
                 end; %end non null
 
@@ -529,7 +505,8 @@ try  % goes with catch at end of script
     end; %end block loop
     
     % Close the audio device:
-    PsychPortAudio('Close', pahandle);
+    PsychPortAudio('Close', pahandle1);
+    PsychPortAudio('Close', pahandle2);
  
 % try,   %dummy try if need to troubleshoot
 
