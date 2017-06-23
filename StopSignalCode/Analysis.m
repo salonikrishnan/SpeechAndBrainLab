@@ -14,9 +14,14 @@
 % The seventh column is subject response (no response is 0);
 % The eighth column is their reaction time
 % The ninth column is time since beginning of trial
-% The tenth column is ladder movement (-1 for down, +1 for up, 0 for N/A)	
-filename = 'results/sub52_j1_sw_23-Jun_10-15'		
-load(filename);
+% The tenth column is ladder movement (-1 for down, +1 for up, 0 for N/A)
+
+Seeker = Seeker(1:256,:);
+
+subjname = input('What is the subject code','s');
+condition = input('Word (sw) or Manual (sm)','s');
+filename = [ls(strcat('results/sub',subjname,'_j1_',condition,'_*'))];
+load(strcat(pwd,'/',filename));
 
 %Ladder1
 a=find(Seeker(:,5)==1);
