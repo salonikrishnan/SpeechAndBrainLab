@@ -15,7 +15,7 @@
 % The eighth column is their reaction time
 % The ninth column is time since beginning of trial
 % The tenth column is ladder movement (-1 for down, +1 for up, 0 for N/A)	
-filename = 'results/s21_j1_sw_18-Jun_17-43'		
+filename = 'results/sub52_j1_sw_23-Jun_10-15'		
 load(filename);
 
 %Ladder1
