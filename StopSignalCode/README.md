@@ -34,8 +34,8 @@ Data from the demo does not get saved or logged, so this is just to show the par
 Give the participant some instructions. These are adapted from instructions by Jess Cohen on the Poldrack lab website.
 
 "You will see some letters flash up on screen. As soon as you see the letter, respond as quickly and as accurately as possible."
-In the manual case: "You respond by pressing “n” if a <T> is displayed and “m” if a <D> is displayed. Use the index and middle fingers of your right hand."
-In the vocal case: "You respond by saying "tee" is a <T> is displayed and "dee" if a <D> is displayed"
+In the manual case: "You respond by pressing “n” if a T is displayed and “m” if a D is displayed. Use the index and middle fingers of your right hand."
+In the vocal case: "You respond by saying "tee" is a T is displayed and "dee" if a D is displayed"
 In the pseudoword case: "You will see some made up words on screen. You respond by saying these out loud, as quickly as you can"
 "When you hear a beep, that signals to you stop your response immediately and not to respond to that particular letter/ word. You need to continue to respond to the others after it, unless there is another tone. Both going and stopping are equally important.
 This task is designed to be difficult and for subjects to make mistakes, because we are interested in looking at those mistakes. So don’t get frustrated if it’s difficult. Just make sure not to slow down your responses to wait for the beep so that you are no longer going when you are supposed to, because then you are no longer doing the task.
