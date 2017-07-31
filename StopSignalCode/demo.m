@@ -185,6 +185,7 @@ for block=1:NBLOCKS % change number of blocks
     GetChar;
     Screen('CopyWindow',blank_screen, w);
     Screen('Flip',w);
+    WaitSecs(1);
     
     anchor=GetSecs;
     
@@ -373,7 +374,7 @@ for block=1:NBLOCKS % change number of blocks
                 
             end    %end if
             
-
+            
             tmpsecs=GetSecs;
             
             Screen('CopyWindow',blank_screen, w);
@@ -455,14 +456,14 @@ for block=1:NBLOCKS % change number of blocks
         if type==1
             Screen(w,'TextSize', 30);
             DrawFormattedText(w, sprintf('Correct average RT on Go trials: %.1f (ms)', meanrt(block)), 'center', 'center', 255);
-            DrawFormattedText(w, sprintf('Mistakes with arrow direction on Go trials: %d', dimerrors(block)), 'center', 800, 255);            
+            DrawFormattedText(w, sprintf('Mistakes with arrow direction on Go trials: %d', dimerrors(block)), 'center', 800, 255);
         else
             Screen(w,'TextSize', 20);
-            DrawFormattedText(w, sprintf('Correct average RT on Go trials: %.1f (ms)', meanrt(block)), 'center', 'center', 255);       
+            DrawFormattedText(w, sprintf('Correct average RT on Go trials: %.1f (ms)', meanrt(block)), 'center', 'center', 255);
         end
         Screen('Flip',w);
         %%% wait for key press to begin
-        while ~KbCheck; end % wait for a key press
+        WaitSecs(2);
         
         if totalcnt == 9
             Screen(w,'TextSize', 30);
@@ -476,19 +477,74 @@ for block=1:NBLOCKS % change number of blocks
     
     %%Feedback
     
-
+    
 end
-
 
 Screen('TextSize',w,36);
 Screen('TextFont',w,'Ariel');
 DrawFormattedText(w, 'Great Job. Thank you!', 'center', 'center', 255);
 Screen('Flip',w);
+WaitSecs(2);
 
 Screen('CloseAll');
 PsychPortAudio('Close', pahandle1);
 if type == 2 || type == 3
-PsychPortAudio('Close', pahandle2);
+    PsychPortAudio('Close', pahandle2);
+    
 end
 
+Seeker = Seeker(1:24,:);
 
+a = max(Ladder1);
+b = max(Ladder2);
+ymax=max([a b]);
+a = min(Ladder1);
+b = min(Ladder2);
+ymin=min([a b]);
+if ymin>0,
+    ymin=0;
+end;
+
+
+xmax=length(Ladder1)+1;
+
+for a=1:size(Ladder1),
+    Ladder1Plot(2*a-1)=Ladder1(a);
+    Ladder2Plot(2*a-1)=Ladder2(a);
+    Ladder1Plot(2*a)=Ladder1(a);
+    Ladder2Plot(2*a)=Ladder2(a);
+end;
+
+subplot(2,2,1);
+for a=1:size(Ladder1)-1;
+    hold on;
+    plot(a:a+1,Ladder1Plot(2*a-1:2*a), 'b');
+    plot([a+1 a+1],Ladder1Plot(2*a:2*a+1), 'b');
+end;
+axis([1 xmax ymin ymax]);
+subplot(2,2,2);
+for a=1:size(Ladder2)-1;
+    hold on;
+    plot(a:a+1,Ladder2Plot(2*a-1:2*a), 'b');
+    plot([a+1 a+1],Ladder2Plot(2*a:2*a+1), 'b');
+end;
+axis([1 xmax ymin ymax]);
+
+GRTmedian=median(Seeker(find(Seeker(:,3)==0 & ((Seeker(:,4)==0 & Seeker(:,7)==LEFT) | (Seeker(:,4)==1 & Seeker(:,7)==RIGHT))),8))*1000;
+
+for ladder=1:2,
+    tmp=Seeker(find(Seeker(:,5)==ladder),7);
+    PctInhib(ladder)=100*sum(tmp(:)==0)/length(tmp);
+end;
+
+% Checks to make sure doing task appropriately across entire run
+PctDimErrors=100*sum((Seeker(:,3)==0 & ((Seeker(:,4)==0 & Seeker(:,7)==RIGHT) | (Seeker(:,4)==1 & Seeker(:,7)==LEFT))))/sum(Seeker(:,3)==0);
+PctGoResp=100*(sum(Seeker(:,3)==0 & Seeker(:,7) ~= 0) / sum(Seeker(:,3)==0));
+
+clc;
+fprintf('Median Go Reaction Time at 50 pct inhib(ms): %f\n',GRTmedian);
+fprintf('Percent discrimination errors: %f\n',PctDimErrors);
+fprintf('Percent responding on go trials: %f\n',PctGoResp);
+fprintf('Percent Inhibition Ladder 1: %0.1f\n',PctInhib(1));
+fprintf('Percent Inhibition Ladder 2: %0.1f\n',PctInhib(2));
+fprintf('Percent Inhibition: %0.1f\n',mean(PctInhib));
