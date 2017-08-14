@@ -29,7 +29,7 @@ The options are
 1. manual (T/D); 
 2. vocal (T/D), 
 3. word (pseudoword lists)
-Data from the demo does not get saved or logged, so this is just to show the participant what to do. 
+Data from the demo does not get saved or logged, so this is just to show the participant what to do. The trial order for the demo is also fixed so the stop signal is the 4th trial on in the first 8 trials, it's also checked to make sure that that the arrow direction occurs for both 't' and 'd' during training. 
 
 Give the participant some instructions. These are adapted from instructions by Jess Cohen on the Poldrack lab website.
 
