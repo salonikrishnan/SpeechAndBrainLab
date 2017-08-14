@@ -38,9 +38,17 @@ NBLOCKS=1;
 
 meanrt=zeros(1,NBLOCKS);
 dimerrors=zeros(1,NBLOCKS);
-LEFT=KbName('n'); % key 1
-RIGHT=KbName('m'); % key 2
+LEFT=KbName('1!'); % key 1
+RIGHT=KbName('2@'); % key 2
 
+numDevices=PsychHID('NumDevices');
+devices=PsychHID('Devices');
+for n=1:numDevices
+    if (findstr(devices(n).transport,'USB') & findstr(devices(n).usageName,'Keyboard') & (devices(n).productID==16385 || devices(n).vendorID==6171 || devices(n).totalElements==274))
+        inputDevice=n;
+    end;
+end;
+fprintf('Using Device #%d (%s)\n',inputDevice,devices(inputDevice).product);
 
 %%%% Setting up the sound stuff - SK - changed to new PsychPortAudio
 %%%% settings for MATLAB R2015b
@@ -207,7 +215,7 @@ for block=1:NBLOCKS % change number of blocks
                 
                 while (GetSecs-start_time < arrow_duration) && noresp==1 %check that response is within 1 second of arrow
                     
-                    [keyIsDown,secs,keyCode] = KbCheck;
+                    [keyIsDown,secs,keyCode] = KbCheck(inputDevice);
                     if keyIsDown && noresp
                         if find(keyCode)==LEFT || find(keyCode)==RIGHT
                             Seeker(totalcnt,7)=find(keyCode);
@@ -224,7 +232,7 @@ for block=1:NBLOCKS % change number of blocks
                         notone=0;
                         
                         while GetSecs-start_time < arrow_duration + 1 && noresp==1
-                            [keyIsDown,secs,keyCode] = KbCheck;
+                            [keyIsDown,secs,keyCode] = KbCheck(inputDevice);
                             if keyIsDown && noresp
                                 if find(keyCode)==LEFT || find(keyCode)==RIGHT
                                     Seeker(totalcnt,7)=find(keyCode);
