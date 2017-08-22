@@ -64,7 +64,7 @@ PsychPortAudio('Start', pahandle1,1);
 PsychPortAudio('Stop', pahandle1, 1);
 
 if type==2 || type==3
-    voicetrigger = 0.01;
+    voicetrigger = 0.05;
     maxsecs = 1;
     freq = 44100;
     audiodevices = PsychPortAudio('GetDevices');
@@ -77,9 +77,9 @@ if type==2 || type==3
             nochannels=audiodevices(n).NrInputChannels;
         end;
     end;
-    fprintf('Using Device #%d (%s)\n',inputDevice,audiodevices(inputDevice+1).DeviceName);
+    fprintf('Using Device #%d (%s)\n',inputDevice,devices(inputDevice).product);
     pahandle2 = PsychPortAudio('Open', inputDevice, 2, 0, freq, nochannels);
-    PsychPortAudio('GetAudioData', pahandle2, 5);
+    PsychPortAudio('GetAudioData', pahandle2, 10);
     recordedaudio = [];
 end
 
@@ -114,7 +114,7 @@ for block=1:NBLOCKS % change number of blocks
     
     %%%% load prescan_wordlist 1 or 2, 3 4, 5, 6, 10;
     stopwords = {}; gowords = {};
-    if type==3
+    if type==3,
         if wordlistchoice==1
             eval(sprintf('load wordlist/prescan_wordlist%d', block));
         else
@@ -137,7 +137,7 @@ for block=1:NBLOCKS % change number of blocks
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     Screen(w, 'TextFont', theFont);
-    Screen(w,'TextSize', 30);
+    Screen(w,'TextSize', 20);
     startstring = sprintf('Get ready for block number %d', block);
     Screen(w,'DrawText',startstring,100,100,TextColor);
     
@@ -207,7 +207,7 @@ for block=1:NBLOCKS % change number of blocks
                 else
                     DrawFormattedText(w, 'D', 'center', 'center', 255);
                 end;
-            elseif type==3  %(i.e. type==3, word)
+            elseif type==3,  %(i.e. type==3, word)
                 Pos=totalcnt-(block-1)*64;
                 DrawFormattedText(w, stop_go_words{Pos}, 'center', 'center', 255);
             end
