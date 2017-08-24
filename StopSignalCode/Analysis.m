@@ -1,3 +1,5 @@
+function SSDfifty = Analysis(filename)
+
 %% Calculate(SSDc)
 % Central SSD was computed, for each subject, from the values of the 4 staircases after the subject had converged on 50% P(inhibit). 
 %Values for the last 10 moves of each staircase were averaged to give a stable SSD estimate. 
@@ -16,10 +18,12 @@
 % The ninth column is time since beginning of trial
 % The tenth column is ladder movement (-1 for down, +1 for up, 0 for N/A)
 
+if nargin < 1
 subjname = input('What is the subject code','s');
 condition = input('Word (sw) or Manual (sm)','s');
-filename = [ls(strcat('results/sub',subjname,'_j1_',condition,'_*'))];
-load(strcat(pwd,'/',filename));
+filename = [ls(strcat(pwd,'/results/sub',subjname,'_j1_',condition,'_*'))];
+end
+load(filename);
 %Seeker = Seeker(1:256,:);
 
 %Ladder1
