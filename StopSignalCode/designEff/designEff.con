@@ -1,0 +1,14 @@
+/ContrastName1	Go 
+/ContrastName2	Stop 
+/ContrastName3	Go > Stop 
+/ContrastName4	Stop > Go 
+/NumWaves	4
+/NumContrasts	4
+/PPheights		7.472043e-01	5.665085e-01	6.263152e-01	6.263152e-01
+/RequiredEffect		1.338	1.488	1.051	1.051
+
+/Matrix
+1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 
+0.000000e+00 0.000000e+00 1.000000e+00 0.000000e+00 
+1.000000e+00 0.000000e+00 -1.000000e+00 0.000000e+00 
+-1.000000e+00 0.000000e+00 1.000000e+00 0.000000e+00 

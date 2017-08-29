@@ -1,5 +1,6 @@
 function make_stopsig_onsets_function(directory_name)
 
+directory_name = 'fMRI';
 base_directory = sprintf('~/Documents/MATLAB/SpeechAndBrainLab/StopSignalCode/results/%s',directory_name);
 cd(base_directory);
 subs = dir('f*');
@@ -13,7 +14,8 @@ try
     
     clear filename;
     clear trigger_time;
-    filename=dir('*sw*'); %select pseudoword files
+%     filename=dir('*sw*'); %select pseudoword files
+    filename.name = 'fMRI_sub1_sw1_22-Aug_15-18.mat';
     load(filename.name);
     
     late_amount = 0;
@@ -42,8 +44,7 @@ try
     fclose(fid);
     
     % Onset File 3: Unsuccessful Stop Trials (correct arrow direction)
-    unsucc_stop_onsets=Seeker(find((Seeker(:,3)==1 & Seeker(:,7)~=0 & ((Seeker(:,4)==0 & Seeker(:,7)==LEFT)|(Seeker(:,4)==1 & Seeker(:,7)==RIGHT)))),12)+late_amount;
-    
+    unsucc_stop_onsets=Seeker(find(Seeker(:,3)==1 & Seeker(:,7)~=0),12)+late_amount;
     fname=sprintf('run1_unsucc_stop_onsets.txt');
     fid=fopen(fname,'w');
     if length(unsucc_stop_onsets) > 0 fprintf(fid,'%0.4f\t1.5\t1\n',unsucc_stop_onsets); end
