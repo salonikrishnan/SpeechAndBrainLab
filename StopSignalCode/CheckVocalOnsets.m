@@ -1,20 +1,36 @@
 function CheckVocalOnsets(inputfile,subject_code,block)
 
 if nargin < 3
-    inputfile = input('File name','s');
     subject_code = input('Subject code','s');
     block = input('Scan number:');
+    cd results/fMRI/subject_code/
+    ls;
+    inputfile = input('File name','s');
 end
 
 load(inputfile);
-cd voicefiles/subject_code
-files = dir(strcat('block',num2str(block),'*'))
+cd ../../../voicefiles/subject_code
+files = dir(strcat('scannum',num2str(block),'*'));
 
-for i = 1:length(Seeker); 
+InitializePsychSound(1); %low latency setting
+samp = 22255;
+pahandle1 = PsychPortAudio('Open', [],[],[],samp,1);
+
+VocalOrNot = 0;
+for i = 1:length(Seeker);
     
-    if Seeker(i,9)~=0; Seeker(i,7) = 1; end; 
-
+    aud_stim = 'xx';% read in name of file
+    disp('Playing file');
+    PsychPortAudio('FillBuffer', pahandle1, aud_stim);
+    PsychPortAudio('Start', pahandle1,1);
+    PsychPortAudio('Stop', pahandle1, 1);
+    VocalOrNot = input('Type 1 if there was a response, 0 if not:');
+    Seeker(i,7) = VocalOrNot;
+    
 end
 
-save(outfile, 'Seeker');
+PsychPortAudio('Close', pahandle1);
+
+cd ../../results/fMRI/subject_code/
+save(inputfile, 'Seeker');
 end
