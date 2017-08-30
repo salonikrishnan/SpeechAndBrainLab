@@ -7,7 +7,8 @@ if nargin < 3
 end
 
 load(inputfile);
-cd voicefiles/subject_code
+cd(voicefiles);
+cd(subject_code);
 files = dir(strcat('block',num2str(block),'*'))
 
 for i = 1:length(Seeker); 
