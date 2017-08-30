@@ -46,6 +46,8 @@ devices=PsychHID('Devices');
 for n=1:numDevices
     if (findstr(devices(n).transport,'USB') & findstr(devices(n).usageName,'Keyboard') & (devices(n).productID==16385 || devices(n).vendorID==6171 || devices(n).totalElements==274))
         inputDevice=n;
+    elseif findstr(devices(n).usageName,'Keyboard');
+       inputDevice=n;
     end;
 end;
 fprintf('Using Device #%d (%s)\n',inputDevice,devices(inputDevice).product);
@@ -69,7 +71,12 @@ if type==2 || type==3
     freq = 44100;
     audiodevices = PsychPortAudio('GetDevices');
     for n=1:size(audiodevices,2)
-        if strfind(audiodevices(n).DeviceName,'Samson C01U Pro Mic')
+        if strfind(audiodevices(n).DeviceName,'USB Audio CODEC')
+            nochannels=audiodevices(n).NrInputChannels;
+            if nochannels==2
+            inputDevice=audiodevices(n).DeviceIndex;
+            end
+        elseif strfind(audiodevices(n).DeviceName,'Samson C01U Pro Mic')
             inputDevice=audiodevices(n).DeviceIndex;
             nochannels=audiodevices(n).NrInputChannels;
         elseif strfind(audiodevices(n).DeviceName,'Built-in Microph')

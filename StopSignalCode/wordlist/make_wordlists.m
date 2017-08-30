@@ -1,4 +1,4 @@
-fileID = fopen('fmri_wordlist_pure.txt')
+fileID = fopen('fmri_wordlist_new.txt')
 formatSpec = '%s'
 C = textscan(fileID,formatSpec);
 fclose(fileID);
@@ -23,7 +23,7 @@ clear all
 
 cd ../
 
-fileID = fopen('behav_wordlist_pure.txt')
+fileID = fopen('behav_wordlist_new.txt')
 formatSpec = '%s'
 C = textscan(fileID,formatSpec);
 fclose(fileID);
