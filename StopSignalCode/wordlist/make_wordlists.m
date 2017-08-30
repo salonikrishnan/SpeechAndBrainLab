@@ -8,7 +8,7 @@ cd wordlist
 wordlist = {}; 
 
 for i=1:128
-    wordlist(i,:)=C{1}{i};
+    wordlist{i}=C{1}{i};
 end
 
 save('wordlist1','wordlist')
