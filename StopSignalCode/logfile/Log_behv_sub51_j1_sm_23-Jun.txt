@@ -1,9 +1,0 @@
-
-
-
-
-Stop_behav, tracking version 1 (revised 06-10-17)
-Subject 51, Session #1
-Started: 23-Jun-2017 74:117
-1	1	0	0	0	0	0	0.000	2.622	0
-2	1	0	1	0	0	0	0.000	5.195	0
