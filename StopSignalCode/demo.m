@@ -10,11 +10,12 @@ if type==1, tasktype='sm'; elseif type==2, tasktype='sv'; elseif type==3, taskty
 JitterType=1;
 wordlistchoice = 2;
 
-
+screens=Screen('Screens');
+screenNumber=max(screens);
 %get screen ready
 Screen('Preference', 'SkipSyncTests', 1);
 pixelSize=32;
-[w, screenRect]=Screen(0, 'OpenWindow', 0, [], pixelSize);
+[w, screenRect]=Screen(screenNumber, 'OpenWindow', 0, [], pixelSize);
 HideCursor;
 black=BlackIndex(w);
 white=WhiteIndex(w);
@@ -41,16 +42,28 @@ dimerrors=zeros(1,NBLOCKS);
 LEFT=KbName('1!'); % key 1
 RIGHT=KbName('2@'); % key 2
 
+% numDevices=PsychHID('NumDevices');
+% devices=PsychHID('Devices');
+% for n=1:numDevices
+%     if (findstr(devices(n).transport,'USB') & findstr(devices(n).usageName,'Keyboard') & (devices(n).productID==16385 || devices(n).vendorID==6171) & findstr(devices(n).manufacturer,'Current Designs, Inc.'))
+%         inputDevice=n;
+%     elseif findstr(devices(n).usageName,'Keyboard');
+%        inputDevice=n;
+%     end;
+% end;
+% fprintf('Using Device #%d (%s)\n',inputDevice,devices(inputDevice).product);
+
 numDevices=PsychHID('NumDevices');
 devices=PsychHID('Devices');
 for n=1:numDevices
-    if (findstr(devices(n).transport,'USB') & findstr(devices(n).usageName,'Keyboard') & (devices(n).productID==16385 || devices(n).vendorID==6171 || devices(n).totalElements==274))
+    if (findstr(devices(n).manufacturer,'Current Designs, Inc.') & findstr(devices(n).transport,'USB') & findstr(devices(n).usageName,'Keyboard'))
         inputDevice=n;
-    elseif findstr(devices(n).usageName,'Keyboard');
-       inputDevice=n;
+    else
+        inputDevice=11;
     end;
 end;
 fprintf('Using Device #%d (%s)\n',inputDevice,devices(inputDevice).product);
+
 
 %%%% Setting up the sound stuff - SK - changed to new PsychPortAudio
 %%%% settings for MATLAB R2015b
@@ -250,7 +263,7 @@ for block=1:NBLOCKS % change number of blocks
                         notone=0;
                         
                         while GetSecs-start_time < arrow_duration + 1 && noresp==1
-                            [keyIsDown,secs,keyCode] = KbCheck(inputDevice);
+                            [keyIsDown,secs,keyCode] = %KbCheck(inputDevice);
                             if keyIsDown && noresp
                                 if find(keyCode)==LEFT || find(keyCode)==RIGHT
                                     Seeker(totalcnt,7)=find(keyCode);
