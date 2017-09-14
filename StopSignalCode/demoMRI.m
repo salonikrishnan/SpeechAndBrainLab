@@ -1,8 +1,8 @@
 %%% get ready by deleting all variables and all feedback figures
 clear all;
-script_name='Stop_behav, demo version';
+script_name='Stop_MRI, demo version';
 script_version='1';
-revision_date='06-10-17';
+revision_date='14-09-17';
 
 % read in subject initials
 type = input('Enter manual (1), vocal (2) or word (3): ');
@@ -45,10 +45,10 @@ RIGHT=KbName('2@'); % key 2
 numDevices=PsychHID('NumDevices');
 devices=PsychHID('Devices');
 for n=1:numDevices
-    if (findstr(devices(n).transport,'USB') & findstr(devices(n).usageName,'Keyboard') & (devices(n).productID==16385 || devices(n).vendorID==6171) & findstr(devices(n).manufacturer,'Current Designs, Inc.'))
+    if (strfind(devices(n).manufacturer,'Current Designs, Inc.')==1) & devices(n).vendorID==6171
         inputDevice=n;
-    elseif findstr(devices(n).usageName,'Keyboard');
-       inputDevice=n;
+    elseif (findstr(devices(n).usageName,'Keyboard'))
+        inputDevice=n;
     end;
 end;
 fprintf('Using Device #%d (%s)\n',inputDevice,devices(inputDevice).product);
@@ -199,7 +199,7 @@ for block=1:NBLOCKS % change number of blocks
     
     anchor=GetSecs;
     
-    for a=1:3 %4 miniblocks
+    for a=1 %4 miniblocks
         for b=1:8 % within each miniblock
             
             Screen(w, 'TextSize', ArrowSize);
@@ -252,7 +252,7 @@ for block=1:NBLOCKS % change number of blocks
                         notone=0;
                         
                         while GetSecs-start_time < arrow_duration + 1 && noresp==1
-                            [keyIsDown,secs,keyCode] = %KbCheck(inputDevice);
+                            [keyIsDown,secs,keyCode] = KbCheck(inputDevice);
                             if keyIsDown && noresp
                                 if find(keyCode)==LEFT || find(keyCode)==RIGHT
                                     Seeker(totalcnt,7)=find(keyCode);
