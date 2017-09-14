@@ -21,12 +21,10 @@ function SSDfifty = Analysis(filename)
 if nargin < 1
 subjname = input('What is the subject code','s');
 condition = input('Word (sw) or Manual (sm)','s');
-<<<<<<< HEAD
 filename = [ls(strcat(pwd,'/results/Behaviour/sub',subjname,'_j1_',condition,'_*'))];
-=======
+
 ls(strcat(pwd,'/results/sub',subjname,'_j1_',condition,'_*'))
 filename = input('Filename','s');
->>>>>>> 272fd34395eea78444c05397769a7c3b844eb959
 end
 load(filename);
 %Seeker = Seeker(1:256,:);
