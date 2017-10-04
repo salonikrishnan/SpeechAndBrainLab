@@ -45,10 +45,10 @@ RIGHT=KbName('2@'); % key 2
 numDevices=PsychHID('NumDevices');
 devices=PsychHID('Devices');
 for n=1:numDevices
-    if (strfind(devices(n).manufacturer,'Current Designs, Inc.')==1) & devices(n).vendorID==6171
+    if devices(n).vendorID==6171 
+        if strcmp(devices(n).usageName,'Keyboard')
         inputDevice=n;
-    elseif (findstr(devices(n).usageName,'Keyboard'))
-        inputDevice=n;
+        end
     end;
 end;
 fprintf('Using Device #%d (%s)\n',inputDevice,devices(inputDevice).product);
