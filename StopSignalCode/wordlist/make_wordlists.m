@@ -19,6 +19,12 @@ for i=129:256
 end
 save('wordlist2','wordlist')
 
+for i=1:192
+    wordlist{i}=C{1}{i}
+end
+save('wordlist192','wordlist')
+
+
 clear all
 
 cd ../

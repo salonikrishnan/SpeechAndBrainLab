@@ -9,3 +9,6 @@ pahandle = PsychPortAudio('Open', [],[],[],samp,1);
 PsychPortAudio('FillBuffer', pahandle, aud_stim);
 PsychPortAudio('Start', pahandle,1);
 PsychPortAudio('Stop', pahandle, 1);
+
+wavfilename = 'test.wav'
+psychwavwrite(transpose(aud_stim), 22255, 16, wavfilename)
