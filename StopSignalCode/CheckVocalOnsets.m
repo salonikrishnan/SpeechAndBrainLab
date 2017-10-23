@@ -10,7 +10,7 @@ end
 
 load(inputfile);
 cd(strcat(base_directory,'voicefiles/sub',num2str(subject_code),'/'))
-files = dir(strcat('scan',num2str(block),'*'));
+files = dir(strcat('session',num2str(block),'*'));
 
 InitializePsychSound(1); %low latency setting
 samp = 44100;
@@ -19,8 +19,9 @@ pahandle1 = PsychPortAudio('Open', [],[],[],samp,2);
 VocalOrNot = 0;
 for i = 1:size(files)
     try
-        x = strsplit(files(i).name, '_');
-        Pos = str2double(x(4));
+        y = strsplit(files(i).name, '_');
+        x = strsplit(y{1,3},'.');
+        Pos = str2double(x{1});
         [aud_stim, samp] = audioread(files(i).name);% read in name of file
         fprintf('Playing file %s \n',files(i).name);
         PsychPortAudio('FillBuffer', pahandle1, aud_stim');

@@ -8,6 +8,8 @@ try
     %% first make pseudoword onsets
     
     %% read in file
+    base_directory_voice = sprintf('~/Documents/MATLAB/SpeechAndBrainLab/StopSignalCode/voicefiles/sub%s',num2str(subject_code));
+    cd(base_directory_voice);
     subs = dir('sw*.mat');
     size_subs = size(subs,1);
     for g = 1:size_subs
@@ -29,28 +31,28 @@ try
         
         %% Onset File 1: Correct Go Trials
         go_onsets=Seeker(find((Seeker(:,3)==0)),12)+late_amount;
-        fname=sprintf('sw_%s_go_onsets.txt',num2str(g));
+        fname=sprintf([base_directory,'/sw_%s_go_onsets.txt'],num2str(g));
         fid=fopen(fname,'w');
         if length(go_onsets) > 0; fprintf(fid,'%0.4f\t1.5\t1\n',go_onsets); end
         fclose(fid);
         
         %% Onset File 2: Successful Stop Trials
         succ_stop_onsets=Seeker(find(Seeker(:,3)==1 & Seeker(:,7)==0),12)+late_amount;
-        fname=sprintf('sw_%s_succ_stop_onsets.txt',num2str(g));
+        fname=sprintf([base_directory,'/sw_%s_succ_stop_onsets.txt'],num2str(g));
         fid=fopen(fname,'w');
         if length(succ_stop_onsets) > 0; fprintf(fid,'%0.4f\t1.5\t1\n',succ_stop_onsets); end
         fclose(fid);
         
         %% Onset File 3: Unsuccessful Stop Trials (correct arrow direction)
         unsucc_stop_onsets=Seeker(find(Seeker(:,3)==1 & Seeker(:,7)~=0),12)+late_amount;
-        fname=sprintf('sw_%s_unsucc_stop_onsets.txt',num2str(g));
+        fname=sprintf([base_directory,'/sw_%s_unsucc_stop_onsets.txt'],num2str(g));
         fid=fopen(fname,'w');
         if length(unsucc_stop_onsets) > 0; fprintf(fid,'%0.4f\t1.5\t1\n',unsucc_stop_onsets); end
         fclose(fid);
         
         %% Onset File 4: Junk Variable (trials where participants don't respond on go trials)
         junk_onsets=Seeker(find((Seeker(:,3)==0 & Seeker(:,7)==0)),12)+late_amount;
-        fname=sprintf('sw_%s_junk_onsets.txt',num2str(g));
+        fname=sprintf([base_directory,'/sw_%s_junk_onsets.txt'],num2str(g));
         fid=fopen(fname,'w');
         if length(junk_onsets) > 0; fprintf(fid,'%0.4f\t1.5\t1\n',junk_onsets); end
         fclose(fid);
