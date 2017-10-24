@@ -154,7 +154,7 @@ for block=1:NBLOCKS % change number of blocks
         inst={{'This is the STOP MANUAL experiment'} ...
             {''}...
             {'Remember, as FAST as you can press the'}...
-            {'left button if you see "T" and the right button if you see "D". '}...
+            {'left button if you see "<" and the right button if you see ">". '}...
             {'Remember, if you hear a beep, your task'}...
             {'is to STOP yourself from pressing.'}...
             {''}...
@@ -197,6 +197,10 @@ for block=1:NBLOCKS % change number of blocks
     Screen('Flip',w);
     WaitSecs(1);
     
+    DisableKeysForKbCheck(KbName('5%'));
+    RestrictKeysForKbCheck([KbName('1!'),KbName('2@'), KbName('q')]);
+    
+    
     anchor=GetSecs;
     
     for a=1 %4 miniblocks
@@ -212,9 +216,9 @@ for block=1:NBLOCKS % change number of blocks
             WaitSecs(0.5);
             if type==1 || type==2
                 if (Seeker(totalcnt,4)==0),
-                    DrawFormattedText(w, 'T', 'center', 'center', 255);
+                    DrawFormattedText(w, '<', 'center', 'center', 255);
                 else
-                    DrawFormattedText(w, 'D', 'center', 'center', 255);
+                    DrawFormattedText(w, '>', 'center', 'center', 255);
                 end;
             elseif type==3  %(i.e. type==3, word)
                 Pos=totalcnt-(block-1)*64;
